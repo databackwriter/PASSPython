@@ -5,10 +5,10 @@ Created on Wed Oct 17 12:31:04 2018
 
 @author: petermoore
 """
-message = "2/2Updating using OAuth authentication via Tweepy!"
-con_sec = "ozbVURIAUTqRkeVE31gzw8vhf3Od3oY2oM45L5aL5EiNqXE3TI"
-acc_tok = "54530145-LUHaQY9lWRNJicKg16bOaeQKL51ohNTgXBlHzrAjO"
-acc_sec = "yql7bFUheCIoxXn4OaJmtwQcbIrzSukT4KImlEfjfLVGI"
+message = "This is a tweet!"
+con_sec = "rem"
+acc_tok = "rem"
+acc_sec = "rem"
 import tweepy
 from tweepy import OAuthHandler
 consumer_key = "iQkbcIUGmkhLqLBQb5tonpXjd"

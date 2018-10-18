@@ -1,8 +1,5 @@
-
-
-
 DECLARE @message NVARCHAR(4000)
-, @con_key NVARCHAR(4000)
+      , @con_key NVARCHAR(4000)
       , @con_sec NVARCHAR(4000)
       , @acc_tok NVARCHAR(4000)
       , @acc_sec NVARCHAR(4000);
@@ -13,25 +10,27 @@ DECLARE @d INT = DATEDIFF(mi, GETDATE(), '2018-10-18 18:10')
 
 
 
-SELECT @messagein = CASE
-                        WHEN @d > 0 THEN
-                            'Join me and @TheSQLalizer presenting at PASS Manchester Data Platform User Group (@ManSSUG), only ' + CAST(@d AS VARCHAR) + ' minutes to go. http://bit.ly/24hrDataPeople'
-                        WHEN @d
-                             BETWEEN -60 AND 0 THEN
-                            'I am presenting @ManSSUG RIGHT NOW :-)'
-                        WHEN @d
-                             BETWEEN -150 AND -90 THEN
-                            'Now @ManSSUG is being treated to @TheSQLalizer'
-                        WHEN @d < -150 THEN
-                            'Thank you @TheSQLalizer and @ManSSUG, I hope you enjoyed it as much as I did'
-                        ELSE
-                            'I am eating pizza'
-                    END;
+SELECT @messagein
+    = CASE
+          WHEN @d > 0 THEN
+              'Join me and @TheSQLalizer presenting at PASS Manchester Data Platform User Group (@ManSSUG), only '
+              + CAST(@d AS VARCHAR) + ' minutes to go. http://bit.ly/24hrDataPeople'
+          WHEN @d
+               BETWEEN -60 AND 0 THEN
+              'Now @ManSSUG is being treated to @TheSQLalizer'
+          WHEN @d
+               BETWEEN -150 AND -61 THEN
+              'I am presenting @ManSSUG RIGHT NOW :-)'
+          WHEN @d < -150 THEN
+              'Thank you @TheSQLalizer and @ManSSUG, I hope you enjoyed it as much as I did'
+          ELSE
+              'I am eating pizza'
+      END;
 
 
 
 SELECT @message = messageout
-,@con_key = con_key
+     , @con_key = con_key
      , @con_sec = con_sec
      , @acc_tok = acc_tok
      , @acc_sec = acc_sec
