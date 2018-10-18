@@ -9,9 +9,12 @@ output:
     logo: images/LAYD.png
 ---
 
-<!-- This markdown file forms the html pages that formed the Python in SSMS presentation -->
 
 ```{r r-keep-tidy, include = FALSE}
+
+# This is the Rmarkdown that forms the html that forms the original Python in SSMS presentation
+# as the presentation mutates, different branches will be published per venue
+
 
 options(warn=-1)
 rm(list=ls()) #clear variables
