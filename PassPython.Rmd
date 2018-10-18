@@ -9,7 +9,10 @@ output:
     logo: images/LAYD.png
 ---
 
+<!-- This markdown file forms the html pages that formed the Python in SSMS presentation -->
+
 ```{r r-keep-tidy, include = FALSE}
+
 options(warn=-1)
 rm(list=ls()) #clear variables
 cat("\014")  #clear console
