@@ -1,0 +1,308 @@
+---
+title: "Python in SSMS"
+author: "pete@lookatyourdata.com"
+date: "`r Sys.Date()`"
+output:
+  ioslides_presentation:
+    incremental: true
+    widescreen: true
+    logo: images/LAYD.png
+---
+
+```{r r-keep-tidy, include = FALSE}
+options(warn=-1)
+rm(list=ls()) #clear variables
+cat("\014")  #clear console
+
+```
+
+
+```{r r-setup-part-1, include=FALSE} 
+# we are going to use R, sql and python and we are going to set them up now.
+
+# use the tufte library for visual output
+require(tufte)
+
+# use the reticulate library to speak to python
+library(reticulate)
+
+# use dplyr for data transformations
+library(dplyr)
+
+# use for image rendering
+library(png)
+library(grid)
+
+# and immediately deploy reticulate to utilise conda
+use_condaenv(condaenv="PyR", required =TRUE)
+
+```
+
+```{python py-setup, include=FALSE}
+PATH_FILE="/Users/petermoore/Documents/GitHub/PASSPython/Python"
+import os
+os.chdir(PATH_FILE)
+import sys
+sys.path.append(PATH_FILE) #add local directory to path
+
+from constants import DSN, ALCHEMYDSN, pdsn, puser, ppassword
+
+```
+
+```{r r-setup-part-2, include=FALSE} 
+
+# use the DBI and odbc packages to connet to sql from R
+#(NB the exact connections.yaml file is not included, for obvious password-related reasons, but I've provided a mock-up in the ODBC folder which you could adapt)
+library(DBI) # for SQL database calls
+library(odbc) # for R database calls
+
+# get connection variables 
+con <- DBI::dbConnect(odbc::odbc(),
+                      DSN = py$pdsn,
+                      uid = py$puser,
+                      pwd = py$ppassword)
+
+# collate these in knitr with all the other chunk options
+knitr::opts_chunk$set(tidy = FALSE, 
+                      cache.extra = packageVersion('tufte'), 
+                      connection = con, 
+                      max.print = NA, 
+                      fig.pos = 'H',
+                      fig.width = 5,
+                      fig.height = 5) 
+knitr::knit_engines$set(python = reticulate::eng_python)
+
+# set up html
+options(htmltools.dir.version = FALSE)
+
+
+```
+
+## Me
+- Owner Look at your Data
+- Masters student Data Science, University of Dundee
+- I bloomin' love this stuff 
+
+## You
+- Python
+- R
+- SQL
+- All three?
+- Primary coding language
+
+## Goals
+- Explanation
+- Empowerment
+- Justification
+- ...NB...
+- That leaves quite a lot this _isn't_ about
+
+## Method
+- Explanation of SQL (all apologies)
+- Explanation of Python
+- "Hello world"
+- Whoa there, Neddy!
+- Environments
+- Let's do this
+
+## SQL
+```{sql sqlversion, echo = TRUE, eval = TRUE}
+SELECT @@VERSION
+```
+
+## Environment SQL
+- Uninstalled everything
+- I installed SQL vNext (Developer Edition) from here https://www.microsoft.com/evalcenter/evaluate-sql-server-2019-ctp
+- I chose Select All at feature selection
+- (Warning: Bit of a nightmare on Linux)
+- SQL Configuration: Enable TCP/IP
+- Restart 
+- EXEC sp_configure 'external scripts enabled', 1;
+- Start Launchpad (Or see this: <div color="red">SQL Server was unable to communicate with the LaunchPad service for request id</div>)
+
+
+## SQL to Python: Behind the scenes part one 
+
+![image from https://docs.microsoft.com/en-us/sql/advanced-analytics/concepts/extension-python?view=sql-server-2017](images/pythonarchitectureserver.png)
+
+## SQL to Python: Behind the scenes part two 
+
+![image from https://docs.microsoft.com/en-us/sql/advanced-analytics/concepts/extension-python?view=sql-server-2017](images/pythonarchitectureclientserver.png)
+
+## Now let's do some python
+
+- Shall we go to SSMS?^[see SQL/001 Test Script.sql]
+
+## Whoa there, Neddy!
+
+- Just because we present as normal does not mean we are
+- Let's just back up
+
+
+## Python
+
+![image from: http://res.publicdomainfiles.com/pdf_view/84/13939534812707.png](images/Swissarmyknife.png)
+
+- Scripts (and/or RBAR)
+- General purpose
+- Being something other people are good at
+- Adopted by Data Science
+
+## Python environment
+
+- pip
+- https://docs.microsoft.com/en-us/sql/advanced-analytics/python/install-additional-python-packages-on-sql-server?view=sql-server-2017 
+- what this means
+  - cd "C:\\Program Files\\Microsoft SQL Server\\MSSQL15.LAYDSQL2019\\PYTHON_SERVICES\\Scripts" 
+  - **this folder is your friend**
+  - pip install boto3 (say)
+- what else have we got?
+  - spyder anyone?
+
+
+## Can we code yet
+
+- Not quite
+- Quick refresher^[see SQL/00X dynamic.sql]
+
+## Recap
+
+- Enabled scripts ... not yet done
+- Launched, erm, LaunchPad ... not yet done
+- Ran some SSMS-based Python ... not yet done(!)
+- Met pip ... not yet done
+- Embraced pip ... let's code
+
+## Web scraping
+
+- Ask sysadmin first
+- We will use https://www.theguardian.com/football/premierleague/table (non-commercially!)^[see SQL/003 Web scrape.sql]
+- You should check a website’s Terms and Conditions before you scrape it. Be careful to read the statements about legal use of data. Usually, the data you scrape should not be used for commercial purposes.
+- Do not request data from the website too aggressively with your program (also known as spamming), as this may break the website. Make sure your program behaves in a reasonable manner (i.e. acts like a human). One request for one webpage per second is good practice.
+- The layout of a website may change from time to time, so make sure to revisit the site and rewrite your code as needed
+
+(taken from: https://medium.freecodecamp.org/how-to-scrape-websites-with-python-and-beautifulsoup-5946935d93fe)
+
+## Hacks
+
+- always use " not ' in Python code
+- always use NVARCHAR (and declare @p = N'something')
+- *think* sysadmin
+
+## Python in SSMS
+
+- Do we need it?!
+- Familiarity is a big reason
+- Lack of good ORM tools another and/or faith in SSMS
+- Need to trial stohastic processes
+
+## Stretch goal: Kmeans
+
+```{r km, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+From (amongst other places): http://rstudio-pubs-static.s3.amazonaws.com/3446_e5bd18f593e54b3fb4ca9d283158f560.html
+
+## Stretch goal: Kmeans
+
+```{r km0, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km1, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km2, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km3, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km4, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km5, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km6, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+## Stretch goal: Kmeans
+
+```{r km7, echo = FALSE, eval=TRUE}
+newiris <- iris
+newiris$Species <- NULL
+kc <- kmeans(newiris, 3)
+plot(newiris[c("Sepal.Length", "Sepal.Width")], col=kc$cluster)
+points(kc$centers[,c("Sepal.Length", "Sepal.Width")], col=1:3, pch=8, cex=2)
+```
+
+
+## Why it makes SQL important
+
+- Trials!
+- https://app.powerbi.com/view?r=eyJrIjoiZWNiNDcwYjYtOWFkYS00MjgyLTkwZGUtZGQ0NmI1ODkxMzJmIiwidCI6IjdhZDRlMDg1LWE3ZWMtNDZlOC1hODIwLWI5MjM1NDRmMGVhOCJ9
+
+## Community profile
+
+![image by @iBenWild](images/Me.jpg)
+
+- GitHub^[to find these slide see: https://github.com/databackwriter/PASSPython]: https://github.com/databackwriter
+- Blog: https://databackwriter.com
+- Twitter: https://twitter.com/thedatabloke
+- LinkedIn: https://www.linkedin.com/in/lookatmydata/
+- StackOverflow: https://stackexchange.com/users/12936623/pete-moore
+
+
+- available for work: pete@lookatyourdata.com
+
