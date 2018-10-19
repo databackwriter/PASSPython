@@ -9,11 +9,17 @@ output:
     logo: images/LAYD.png
 ---
 
+<<<<<<< HEAD
 
 
 ```{r r-keep-tidy, include = FALSE}
 # This markdown file forms the html pages that formed the Python in SSMS presentation
 # per the Branch name, this refers to the presentation given in Leeds on 17th October 2018
+=======
+<!-- This markdown file forms the html pages that formed the Python in SSMS presentation -->
+
+```{r r-keep-tidy, include = FALSE}
+>>>>>>> 6e138d4622669343e771d9c37546d70205a8c0b7
 
 options(warn=-1)
 rm(list=ls()) #clear variables
