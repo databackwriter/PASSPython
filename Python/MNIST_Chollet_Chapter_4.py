@@ -55,7 +55,9 @@ original_hist = original_model.fit(x_train, y_train,
 
 
 import pandas as pd
-df_history = pd.DataFrame.from_dict(original_hist.history)
+df_history = pd.DataFrame.from_dict(original_hist.history)[["val_loss", "val_acc", "loss", "acc"]]
+
+
 
 print(df_history)
 

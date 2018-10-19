@@ -11,7 +11,7 @@ acc_tok = "rem"
 acc_sec = "rem"
 import tweepy
 from tweepy import OAuthHandler
-consumer_key = "iQkbcIUGmkhLqLBQb5tonpXjd"
+consumer_key = "rem"
 consumer_secret = con_sec
 access_token = acc_tok
 access_secret = acc_sec

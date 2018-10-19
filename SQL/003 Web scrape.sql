@@ -22,6 +22,8 @@ CREATE TABLE dbo.PremierLeague
   , RecentForm NVARCHAR(MAX)
 );
 GO
+DROP PROCEDURE  IF EXISTS dbo.GetPremierLeague
+GO
 CREATE PROCEDURE dbo.GetPremierLeague
 AS
 DECLARE @PyScript NVARCHAR(4000)

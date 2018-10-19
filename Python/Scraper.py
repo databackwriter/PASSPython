@@ -35,5 +35,5 @@ print(df)
 
 
 
-x = df.groupby(["W"])[["A"]].max()
+
 

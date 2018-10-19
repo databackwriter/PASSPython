@@ -81,10 +81,10 @@ y_train = np.asarray(train_labels).astype("float32")
 y_test = np.asarray(test_labels).astype("float32")
 
 mysize=16
-myepochs=5
+myepochs=10
 history = CreateModel(x_train, x_test, y_train, y_test, size_layer1_2 = mysize,epochs = myepochs)
 
-df_history = pd.DataFrame.from_dict(history.history)
+df_history = pd.DataFrame.from_dict(history.history)[["val_loss", "val_acc", "loss", "acc"]]
 
 print(df_history)
 

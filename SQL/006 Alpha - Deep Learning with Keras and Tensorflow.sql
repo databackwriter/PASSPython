@@ -54,8 +54,6 @@ DECLARE @PyScript NVARCHAR(4000)
     		    # get data from IMDB and train a model to predict whether it is any good
 # See Chollet chapters 3 and 4
 
-
-
 # from Chollet
 def vectorize_sequences(sequences, dimension=10000):
     # Create an all-zero matrix of shape (len(sequences), dimension)
@@ -63,8 +61,6 @@ def vectorize_sequences(sequences, dimension=10000):
     for i, sequence in enumerate(sequences):
         results[i, sequence] = 1.  # set specific indices of results[i] to 1s
     return results
-
-
 
 # Pete Moore function for building a mdoel to detect positivity of review
 def CreateModel(x_train, x_test, y_train, y_test, size_layer1_2,
@@ -113,7 +109,7 @@ mysize=ArraySize
 myepochs=Epochs
 history = CreateModel(x_train, x_test, y_train, y_test, size_layer1_2 = mysize,epochs = myepochs)
 
-df_history = pd.DataFrame.from_dict(history.history)
+df_history = pd.DataFrame.from_dict(history.history)[["val_loss", "val_acc", "loss", "acc"]]
     
     ';
 EXEC sys.sp_execute_external_script @language = N'Python'
@@ -142,13 +138,13 @@ CREATE TABLE dbo.#Results
   , Loss FLOAT NOT NULL
   , Accuracy FLOAT NOT NULL
 );
-DECLARE @Epochs INT = 10
-      , @ArraySize INT = 4;
+DECLARE @Epochs INT = 20
+      , @ArraySize INT ;
 
-WHILE @Epochs <= 11	 --change for a deeper experiment
+WHILE @Epochs <= 21	 --change for a deeper experiment
 BEGIN
-    SELECT @ArraySize = 4;
-    WHILE @ArraySize <= 16
+    SELECT @ArraySize = 16;
+    WHILE @ArraySize <= 512			 --change for a deeper experiment
     BEGIN
         DBCC FREESYSTEMCACHE('ALL') WITH MARK_IN_USE_FOR_REMOVAL;
 
