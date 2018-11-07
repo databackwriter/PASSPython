@@ -5,24 +5,22 @@ DECLARE @message NVARCHAR(4000)
       , @acc_sec NVARCHAR(4000);
 
 
-DECLARE @d INT = DATEDIFF(mi, GETDATE(), '2018-10-18 18:10')
+DECLARE @d INT = DATEDIFF(mi, GETDATE(), '2018-11-09 18:30')
       , @messagein NVARCHAR(4000);
-
-
 
 SELECT @messagein
     = CASE
           WHEN @d > 0 THEN
-              'Join me and @TheSQLalizer presenting at PASS Manchester Data Platform User Group (@ManSSUG), only '
-              + CAST(@d AS VARCHAR) + ' minutes to go. http://bit.ly/24hrDataPeople'
+              'Join me and @PurpleFrogAlex presenting at  #Microsoft Data Platform Group meeting #Birmingham (@MSDataGroupBrum), only '
+              + CAST(@d AS VARCHAR) + ' minutes to go. http://bit.ly/BrumfordandSons'
           WHEN @d
                BETWEEN -60 AND 0 THEN
-              '.@ManSSUG is being treated to @TheSQLalizer'
+			   'I am presenting @MSDataGroupBrum RIGHT NOW :-)'
           WHEN @d
                BETWEEN -150 AND -61 THEN
-              'I am presenting @ManSSUG RIGHT NOW :-)'
+			   '.@MSDataGroupBrum is being treated to @PurpleFrogAlex'
           WHEN @d < -150 THEN
-              'Thank you @TheSQLalizer and @ManSSUG, I hope you enjoyed it as much as I did'
+              'Thank you @PurpleFrogAlex and @MSDataGroupBrum, I hope you enjoyed it as much as I did'
           ELSE
               'I am eating pizza'
       END;
@@ -51,6 +49,19 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 api.update_status(mymessage)';
+
+EXEC sys.sp_execute_external_script @language = N'Python'
+                                  , @script = @PyScript
+                                  , @params = N'@message NVARCHAR(4000)
+      , @con_key NVARCHAR(4000)
+      , @con_sec NVARCHAR(4000)
+      , @acc_tok NVARCHAR(4000)
+      , @acc_sec NVARCHAR(4000)'
+                                  , @message = @message
+                                  , @con_key = @con_key
+                                  , @con_sec = @con_sec
+                                  , @acc_tok = @acc_tok
+                                  , @acc_sec = @acc_sec;
 
 EXEC sys.sp_execute_external_script @language = N'Python'
                                   , @script = @PyScript
