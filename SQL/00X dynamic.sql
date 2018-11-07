@@ -59,7 +59,7 @@ EXEC sys.sp_execute_external_script @language = N'Python'
 PRINT @myvar;
 
 
---get soem data out
+--get some data out
 EXECUTE sp_execute_external_script @language = N'Python'
                                  , @script = N'
 MyOutput = MyInput

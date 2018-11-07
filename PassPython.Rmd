@@ -40,7 +40,7 @@ library(png)
 library(grid)
 
 # and immediately deploy reticulate to utilise conda
-use_condaenv(condaenv="PyR", required =TRUE)
+use_condaenv(condaenv="VacationVision", required =TRUE)
 
 ```
 
