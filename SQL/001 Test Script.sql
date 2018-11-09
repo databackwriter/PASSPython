@@ -22,5 +22,5 @@ EXEC sys.sp_execute_external_script @language = N'Python',
 --But what about  here
 DECLARE @pyversion NVARCHAR(512)
 EXEC sys.sp_execute_external_script @language = N'Python', 
-@script = N'import ant'
+@script = N'import accelerate'
 

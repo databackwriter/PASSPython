@@ -43,15 +43,16 @@ CREATE TABLE dbo.FactIMDBLearn
 
 
 GO
-DROP PROCEDURE IF EXISTS dbo.BuilldIMDBModel;
+DROP PROCEDURE IF EXISTS dbo.BuildIMDBModel;
 GO
-CREATE PROCEDURE dbo.BuilldIMDBModel
+CREATE PROCEDURE dbo.BuildIMDBModel
     @Epochs INT
   , @ArraySize INT
 AS
+PRINT 'Train model machine with ' + CAST(@Epochs AS VARCHAR) + ' with an array size of ' +  CAST(@ArraySize AS VARCHAR)
 DECLARE @PyScript NVARCHAR(4000)
     = N'
-    		    # get data from IMDB and train a model to predict whether it is any good
+# get data from IMDB and train a model to predict whether it is any good
 # See Chollet chapters 3 and 4
 
 # from Chollet
@@ -151,38 +152,38 @@ BEGIN
         TRUNCATE TABLE dbo.#Results;
 
         INSERT INTO dbo.#Results
-        EXEC dbo.BuilldIMDBModel @Epochs = @Epochs, @ArraySize = @ArraySize;
-
+        EXEC dbo.BuildIMDBModel @Epochs = @Epochs, @ArraySize = @ArraySize;
 
         DECLARE @EpochKey INT = NULL;
-        SELECT @EpochKey =
-        (
-            SELECT de.EpochKey FROM dbo.DimEpoch AS de WHERE de.Epochs = @Epochs
-        );
+		SELECT @EpochKey = de.EpochKey 
+		FROM dbo.DimEpoch AS de 
+		WHERE de.Epochs = @Epochs;
         IF @EpochKey IS NULL
+		BEGIN
             INSERT INTO dbo.DimEpoch
             (
                 Epochs
             )
             VALUES
             (@Epochs);
-        SET @EpochKey = SCOPE_IDENTITY();
-
+			SET @EpochKey = SCOPE_IDENTITY();
+		END
         DECLARE @ArraySizeKey INT = NULL;
-        SELECT @ArraySizeKey =
-        (
-            SELECT de.ArraySizeKey
-            FROM dbo.DimArraySize AS de
-            WHERE de.ArraySize = @ArraySize
-        );
+
+        SELECT @ArraySizeKey = de.ArraySizeKey
+        FROM dbo.DimArraySize AS de
+        WHERE de.ArraySize = @ArraySize;
+
         IF @ArraySizeKey IS NULL
+		BEGIN
             INSERT INTO dbo.DimArraySize
             (
                 ArraySize
             )
             VALUES
             (@ArraySize);
-        SET @ArraySizeKey = SCOPE_IDENTITY();
+			SET @ArraySizeKey = SCOPE_IDENTITY();
+		END
 
         INSERT INTO dbo.FactIMDBLearn
         (

@@ -5,7 +5,7 @@ DECLARE @message NVARCHAR(4000)
       , @acc_sec NVARCHAR(4000);
 
 
-DECLARE @d INT = DATEDIFF(mi, GETDATE(), '2018-11-09 18:30')
+DECLARE @d INT = DATEDIFF(mi, GETDATE(), '2018-11-08 18:30')
       , @messagein NVARCHAR(4000);
 
 SELECT @messagein
@@ -63,15 +63,3 @@ EXEC sys.sp_execute_external_script @language = N'Python'
                                   , @acc_tok = @acc_tok
                                   , @acc_sec = @acc_sec;
 
-EXEC sys.sp_execute_external_script @language = N'Python'
-                                  , @script = @PyScript
-                                  , @params = N'@message NVARCHAR(4000)
-      , @con_key NVARCHAR(4000)
-      , @con_sec NVARCHAR(4000)
-      , @acc_tok NVARCHAR(4000)
-      , @acc_sec NVARCHAR(4000)'
-                                  , @message = @message
-                                  , @con_key = @con_key
-                                  , @con_sec = @con_sec
-                                  , @acc_tok = @acc_tok
-                                  , @acc_sec = @acc_sec;
